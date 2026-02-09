@@ -1,0 +1,4 @@
+enum FormResult {
+  success,
+  cancelled,
+}
