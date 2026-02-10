@@ -15,10 +15,16 @@ class ProductRepositoryImpl implements ProductRepository {
 
   ProductRepositoryImpl(this.apiClient);
 
-  Map<String, String> _mapPagination(Pagination p) {
+  Map<String, String> _buildQuery({
+    required Pagination pagination,
+    QueryFilters? filters,
+  }) {
     return {
-      'limit': p.limit.toString(),
-      'skip': ((p.page - 1) * p.limit).toString(),
+      'limit': pagination.limit.toString(),
+      'skip': ((pagination.page - 1) * pagination.limit).toString(),
+
+      if (filters != null && !filters.isEmpty)
+        ...filters.toQuery(),
     };
   }
 
@@ -26,8 +32,12 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<Result<Paginated<Product>>> getProducts({
     required Pagination pagination,
+    QueryFilters? filters,
   }) {
-    final query = _mapPagination(pagination);
+    final query = _buildQuery(
+      pagination: pagination,
+      filters: filters,
+    );
 
     return apiClient.get(
       '/products',
