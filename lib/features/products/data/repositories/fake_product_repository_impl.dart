@@ -8,6 +8,7 @@ class FakeProductRepository implements ProductRepository {
   @override
   Future<Result<Paginated<Product>>> getProducts({
     required Pagination pagination,
+    QueryFilters? filters
   }) async {
     callCount++;
 

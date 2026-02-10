@@ -1,12 +1,12 @@
+import 'package:app_platform_state/src/action/action_status.dart';
 import 'package:app_platform_state/state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app_platform_core/core.dart';
-import 'package:test_pkg/features/products/providers/products_notifier.dart';
 import 'package:test_pkg/widgets/empty_state.dart';
 
 import '../data/models/models.dart';
-import '../providers/product_crud_notifier.dart';
+import '../providers/providers.dart';
 import 'add_product_page.dart';
 
 class ProductsPage extends ConsumerStatefulWidget {
@@ -24,11 +24,6 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
     super.initState();
 
     _scrollController = ScrollController();
-
-    Future.microtask(() {
-      ref.read(productsProvider.notifier).loadFirstPage();
-    });
-
     _scrollController.addListener(_onScroll);
   }
 
@@ -53,7 +48,26 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
     _listenForActions();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Products')),
+      appBar: AppBar(
+        title: const Text('Products'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              _showDialog(context);
+            },
+            icon: Icon(Icons.remove_red_eye_rounded),
+          ),
+        ],
+        leading: IconButton(
+          onPressed: () {
+            _updateFilters({
+              'q': 'iphone', // add filter
+              'm': null, // remove filter
+            });
+          },
+          icon: Icon(Icons.filter),
+        ),
+      ),
       body: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error) =>
@@ -88,6 +102,49 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
     );
   }
 
+  void _showDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Consumer(
+          builder: (context, ref, _) {
+            final crud = ref.watch(productCrudProvider);
+            final crudNotifier = ref.read(productCrudProvider.notifier);
+
+            final key = ActionKey(ActionType.check);
+            final action = crud.get(key.value);
+            final isChecking = crud.isLoading(key.value);
+
+            return AlertDialog(
+              content: IconButton(
+                onPressed: isChecking
+                    ? null
+                    : () async {
+                        await crudNotifier.check();
+                      },
+                icon: switch (action.status) {
+                  ActionStatus.loading => const CircularProgressIndicator(),
+
+                  ActionStatus.success => const Text(
+                    'Done',
+                    style: TextStyle(color: Colors.green),
+                  ),
+
+                  ActionStatus.failure => const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
+
+                  ActionStatus.idle => const Text('Check'),
+                },
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   void _openAddProduct(BuildContext context) async {
     Navigator.push(
       context,
@@ -105,7 +162,7 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(const SnackBar(content: Text('تمت الإضافة بنجاح')));
-            ref.read(productsProvider.notifier).loadFirstPage();
+            ref.invalidate(productsProvider);
           },
           onError: (error) {
             ScaffoldMessenger.of(
@@ -128,6 +185,21 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
         ),
       },
     );
+  }
+
+  void _updateFilters(Map<String, dynamic> updates) {
+    final current = ref.read(productFiltersProvider).values;
+    final next = Map<String, dynamic>.from(current);
+
+    updates.forEach((key, value) {
+      if (value == null) {
+        next.remove(key);
+      } else {
+        next[key] = value;
+      }
+    });
+
+    ref.read(productFiltersProvider.notifier).state = QueryFilters(next);
   }
 }
 
@@ -211,7 +283,7 @@ class _ProductsList extends ConsumerWidget {
                     : () async {
                         await crudNotifier.delete(product.id);
 
-                        ref.read(productCrudProvider.notifier).clear(key.value);
+                        //ref.read(productCrudProvider.notifier).clear(key.value);
                       },
                 icon: isDeleting
                     ? const SizedBox(

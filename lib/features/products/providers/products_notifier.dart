@@ -1,30 +1,42 @@
 import 'package:app_platform_core/core.dart';
 import 'package:app_platform_state/state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:test_pkg/features/products/providers/product_filters_provider.dart';
 
 import '../data/models/product.dart';
 import '../data/repositories/repositories.dart';
 
 final productsProvider =
-    StateNotifierProvider<ProductsNotifier, BaseState<Paginated<Product>>>((
+    StateNotifierProvider.autoDispose<ProductsNotifier, BaseState<Paginated<Product>>>((
       ref,
     ) {
       final repo = ref.read(productRepositoryProvider);
-      return ProductsNotifier(repo);
+      final filters = ref.watch(productFiltersProvider);
+      final notifier = ProductsNotifier(repo, filters);
+
+      Future.microtask(() {
+        notifier.loadFirstPage();
+      });
+
+      return notifier;
     });
 
 class ProductsNotifier extends BaseNotifier<Paginated<Product>> {
   final ProductRepository repository;
+  final QueryFilters filters;
 
   Pagination _pagination = const Pagination(page: 1, limit: 10);
 
-  ProductsNotifier(this.repository);
+  ProductsNotifier(this.repository, this.filters);
 
   Future<void> loadFirstPage() async {
     _pagination = _pagination.first();
     setLoading();
 
-    final result = await repository.getProducts(pagination: _pagination);
+    final result = await repository.getProducts(
+      pagination: _pagination,
+      filters: filters,
+    );
 
     _handle(result, reset: true);
   }
@@ -39,7 +51,10 @@ class ProductsNotifier extends BaseNotifier<Paginated<Product>> {
 
     _pagination = _pagination.next();
 
-    final result = await repository.getProducts(pagination: _pagination);
+    final result = await repository.getProducts(
+      pagination: _pagination,
+      filters: filters,
+    );
 
     switch (result) {
       case Success():

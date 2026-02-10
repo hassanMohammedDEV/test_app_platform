@@ -21,21 +21,35 @@ class ProductCrudNotifier extends StateNotifier<ActionStore> {
 
     if (state.isLoading(key.value)) return;
 
-    // 🔴 state جديد
     state = state.start(key.value);
 
     await Future.delayed(const Duration(milliseconds: 500));
 
-    // 🔴 state جديد
     state = state.success(key.value);
   }
+
+  Future<void> check() async {
+    final key = ActionKey(ActionType.check);
+
+    if (state.isLoading(key.value)) return;
+
+    state = state.start(key.value);
+
+    await Future.delayed(const Duration(milliseconds: 1000));
+
+    state = state.success(key.value);
+
+    await Future.delayed(const Duration(milliseconds: 600));
+
+    state = state.clear(key.value);
+  }
+
 
   Future<void> create(Product input) async {
     final key = ActionKey(ActionType.create);
 
     if (state.isLoading(key.value)) return;
 
-    // 🔴 start
     state = state.start(key.value);
 
     final result = await repository.create(input);
