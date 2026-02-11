@@ -19,13 +19,39 @@ StateNotifierProvider.autoDispose<
         },
       ),
       validators: {
-        ProductField.title: (v) =>
-        v.isEmpty ? 'Title required' : null,
-        ProductField.description: (v) =>
-        v.isEmpty ? 'Description required' : null,
-        ProductField.price: (v) =>
-        v.isEmpty ? 'Price required' : null,
+        ProductField.title:
+        Validators.combine([
+          Validators.required(),
+          Validators.minLength(3),
+          Validators.maxLength(50),
+        ]),
+
+        ProductField.description:
+        Validators.combine([
+          Validators.required(),
+          Validators.minLength(5),
+        ]),
+
+        ProductField.price:
+        Validators.combine([
+          Validators.required(),
+          Validators.numeric(),
+          Validators.range(min: 1, max: 100000),
+        ]),
+
+        // ProductField.email:
+        // Validators.combine([
+        //   Validators.required(),
+        //   Validators.email(),
+        // ]),
+
+        // ProductField.website:
+        // Validators.website(),
       },
     );
   },
 );
+
+
+
+
