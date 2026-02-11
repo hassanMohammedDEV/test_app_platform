@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app_platform_state/state.dart';
+import 'package:test_pkg/features/products/data/models/models.dart';
 
-import '../data/models/product.dart';
 import '../providers/providers.dart';
 
 class AddProductPage extends ConsumerStatefulWidget {
@@ -26,13 +26,20 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     final formNotifier = ref.read(productFormProvider.notifier);
 
     final titleField = ref.watch(
-      productFormProvider.select((form) => form.field<String>('title')),
+      productFormProvider.select(
+            (form) => form.field<String>(ProductField.title),
+      ),
     );
+
     final decField = ref.watch(
-      productFormProvider.select((form) => form.field<String>('description')),
+      productFormProvider.select(
+            (form) => form.field<String>(ProductField.description),
+      ),
     );
     final priceField = ref.watch(
-      productFormProvider.select((form) => form.field<String>('price')),
+      productFormProvider.select(
+            (form) => form.field<String>(ProductField.price),
+      ),
     );
 
     _listenForActions(key);
@@ -45,32 +52,43 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
           children: [
             TextField(
               onChanged: (value) {
-                formNotifier.update<String>(name: 'title', value: value);
+                formNotifier.update(
+                  ProductField.title,
+                  value,
+                );
               },
               decoration: InputDecoration(
-                label: Text('العنوان'),
-                errorText: titleField.touched ? titleField.error : null,
+                labelText: 'Title',
+                errorText:
+                titleField.touched ? titleField.error : null,
               ),
             ),
             const SizedBox(height: 12),
-            TextField(
-              onChanged: (value) {
-                formNotifier.update<String>(name: 'description', value: value);
-              },
-              decoration: InputDecoration(
-                label: Text('الوصف'),
-                errorText: decField.touched ? decField.error : null,
-              ),
-            ),
+        TextField(
+          onChanged: (value) {
+            formNotifier.update(
+              ProductField.description,
+              value,
+            );
+          },
+          decoration: InputDecoration(
+            labelText: 'Description',
+            errorText:
+            titleField.touched ? decField.error : null,
+          ),
+        ),
             const SizedBox(height: 12),
             TextField(
-              keyboardType: TextInputType.number,
               onChanged: (value) {
-                formNotifier.update<String>(name: 'price', value: value);
+                formNotifier.update(
+                  ProductField.price,
+                  value,
+                );
               },
               decoration: InputDecoration(
-                label: Text('السعر'),
-                errorText: priceField.touched ? priceField.error : null,
+                labelText: 'Price',
+                errorText:
+                titleField.touched ? priceField.error : null,
               ),
             ),
             const SizedBox(height: 24),
@@ -82,12 +100,21 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
                       formNotifier.validateAll();
                       if (!form.isValid) return;
 
+
                       notifier.create(
                         Product(
                           id: 1,
-                          title: form.field('title').value,
-                          description: form.field('description').value,
-                          price: double.parse(form.field('price').value),
+                          title: form
+                              .field<String>(ProductField.title)
+                              .value,
+                          description: form
+                              .field<String>(ProductField.description)
+                              .value,
+                          price: double.parse(
+                            form
+                                .field<String>(ProductField.price)
+                                .value,
+                          ),
                         ),
                       );
                     },
