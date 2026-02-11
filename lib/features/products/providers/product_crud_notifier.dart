@@ -40,8 +40,6 @@ class ProductCrudNotifier extends StateNotifier<ActionStore> {
     state = state.success(key.value);
 
     await Future.delayed(const Duration(milliseconds: 600));
-
-    state = state.clear(key.value);
   }
 
 

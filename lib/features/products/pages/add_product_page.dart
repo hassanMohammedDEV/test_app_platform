@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app_platform_state/state.dart';
 
 import '../data/models/product.dart';
-import '../providers/product_crud_notifier.dart';
+import '../providers/providers.dart';
 
 class AddProductPage extends ConsumerStatefulWidget {
   const AddProductPage({super.key});
@@ -13,10 +13,6 @@ class AddProductPage extends ConsumerStatefulWidget {
 }
 
 class _AddProductPageState extends ConsumerState<AddProductPage> {
-  final _titleCtrl = TextEditingController();
-  final _descCtrl = TextEditingController();
-  final _priceCtrl = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     final crud = ref.watch(productCrudProvider);
@@ -25,6 +21,20 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     final key = ActionKey(ActionType.create);
     final action = crud.get(key.value);
     final isSaving = action.isLoading;
+
+    // form
+    final formNotifier = ref.read(productFormProvider.notifier);
+
+    final titleField = ref.watch(
+      productFormProvider.select((form) => form.field<String>('title')),
+    );
+    final decField = ref.watch(
+      productFormProvider.select((form) => form.field<String>('description')),
+    );
+    final priceField = ref.watch(
+      productFormProvider.select((form) => form.field<String>('price')),
+    );
+
     _listenForActions(key);
 
     return Scaffold(
@@ -34,31 +44,50 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
         child: Column(
           children: [
             TextField(
-              controller: _titleCtrl,
-              decoration: const InputDecoration(labelText: 'العنوان'),
+              onChanged: (value) {
+                formNotifier.update<String>(name: 'title', value: value);
+              },
+              decoration: InputDecoration(
+                label: Text('العنوان'),
+                errorText: titleField.touched ? titleField.error : null,
+              ),
             ),
             const SizedBox(height: 12),
             TextField(
-              controller: _descCtrl,
-              decoration: const InputDecoration(labelText: 'الوصف'),
+              onChanged: (value) {
+                formNotifier.update<String>(name: 'description', value: value);
+              },
+              decoration: InputDecoration(
+                label: Text('الوصف'),
+                errorText: decField.touched ? decField.error : null,
+              ),
             ),
             const SizedBox(height: 12),
             TextField(
-              controller: _priceCtrl,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'السعر'),
+              onChanged: (value) {
+                formNotifier.update<String>(name: 'price', value: value);
+              },
+              decoration: InputDecoration(
+                label: Text('السعر'),
+                errorText: priceField.touched ? priceField.error : null,
+              ),
             ),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: isSaving
                   ? null
                   : () {
+                      final form = ref.read(productFormProvider);
+                      formNotifier.validateAll();
+                      if (!form.isValid) return;
+
                       notifier.create(
                         Product(
                           id: 1,
-                          title: _titleCtrl.text,
-                          description: _descCtrl.text,
-                          price: double.parse(_priceCtrl.text),
+                          title: form.field('title').value,
+                          description: form.field('description').value,
+                          price: double.parse(form.field('price').value),
                         ),
                       );
                     },
@@ -76,7 +105,7 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     );
   }
 
-  void _listenForActions(ActionKey key){
+  void _listenForActions(ActionKey key) {
     listenForActions(
       ref: ref,
       provider: productCrudProvider,

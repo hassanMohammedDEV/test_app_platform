@@ -1,4 +1,3 @@
-import 'package:app_platform_state/src/action/action_status.dart';
 import 'package:app_platform_state/state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -58,6 +57,7 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
             icon: Icon(Icons.remove_red_eye_rounded),
           ),
         ],
+        /// filters example
         leading: IconButton(
           onPressed: () {
             _updateFilters({
@@ -103,39 +103,43 @@ class _ProductsPageState extends ConsumerState<ProductsPage> {
   }
 
   void _showDialog(BuildContext context) {
+    final key = ActionKey(ActionType.check);
+
+    ref.read(productCrudProvider.notifier).clear(key.value);
+
     showDialog(
       context: context,
       builder: (context) {
         return Consumer(
           builder: (context, ref, _) {
             final crud = ref.watch(productCrudProvider);
-            final crudNotifier = ref.read(productCrudProvider.notifier);
+            final crudNotifier =
+            ref.read(productCrudProvider.notifier);
 
-            final key = ActionKey(ActionType.check);
             final action = crud.get(key.value);
-            final isChecking = crud.isLoading(key.value);
 
             return AlertDialog(
               content: IconButton(
-                onPressed: isChecking
+                onPressed: action.isLoading
                     ? null
                     : () async {
-                        await crudNotifier.check();
-                      },
+                  await crudNotifier.check();
+                },
                 icon: switch (action.status) {
-                  ActionStatus.loading => const CircularProgressIndicator(),
+                  ActionStatus.loading =>
+                  const CircularProgressIndicator(),
 
-                  ActionStatus.success => const Text(
+                  ActionStatus.success =>
+                  const Text(
                     'Done',
                     style: TextStyle(color: Colors.green),
                   ),
 
-                  ActionStatus.failure => const Icon(
-                    Icons.error,
-                    color: Colors.red,
-                  ),
+                  ActionStatus.failure =>
+                  const Icon(Icons.error, color: Colors.red),
 
-                  ActionStatus.idle => const Text('Check'),
+                  ActionStatus.idle =>
+                  const Text('Check'),
                 },
               ),
             );
