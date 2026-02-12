@@ -16,6 +16,8 @@ StateNotifierProvider.autoDispose<
           const FieldState<String>(value: ''),
           ProductField.price:
           const FieldState<String>(value: ''),
+          ProductField.code:
+          const FieldState<String>(value: ''),
         },
       ),
       validators: {
@@ -39,6 +41,9 @@ StateNotifierProvider.autoDispose<
           Validators.range(min: 1, max: 100000),
         ]),
 
+        ProductField.code:
+            Validators.required()
+
         // ProductField.email:
         // Validators.combine([
         //   Validators.required(),
@@ -47,6 +52,17 @@ StateNotifierProvider.autoDispose<
 
         // ProductField.website:
         // Validators.website(),
+      },
+      asyncValidators: {
+        // Async check for email availability
+        ProductField.code: (value) async {
+          await Future.delayed(
+              const Duration(milliseconds: 800));
+          if (value == 'ewe') {
+            return 'Code already exists';
+          }
+          return null;
+        },
       },
     );
   },

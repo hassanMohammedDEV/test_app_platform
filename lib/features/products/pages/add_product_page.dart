@@ -42,6 +42,15 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       ),
     );
 
+    final codeField = ref.watch(
+      productFormProvider.select(
+            (form) => form.field<String>(ProductField.code),
+      ),
+    );
+
+    final bool canSubmit = ref.watch(
+        productFormProvider.select((form) => form.canSubmit));
+
     _listenForActions(key);
 
     return Scaffold(
@@ -92,14 +101,38 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
               ),
             ),
             const SizedBox(height: 24),
+            TextField(
+              onChanged: (value) {
+                formNotifier.updateAsync(
+                  ProductField.code,
+                  value,
+                );
+              },
+              decoration: InputDecoration(
+                labelText: 'Code',
+                errorText:
+                codeField.touched ? codeField.error : null,
+                suffixIcon: codeField.isValidating
+                    ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                    ),
+                  ),
+                )
+                    : null,
+              ),
+            ),
+            const SizedBox(height: 12),
             ElevatedButton(
-              onPressed: isSaving
+              onPressed: canSubmit && isSaving
                   ? null
                   : () {
                       final form = ref.read(productFormProvider);
                       formNotifier.validateAll();
                       if (!form.isValid) return;
-
 
                       notifier.create(
                         Product(

@@ -35,25 +35,25 @@ dependencies:
   app_platform_core:
     git:
       url: https://github.com/hassanMohammedDEV/app_platform.git
-      ref: 5d5ba20ab50b9f8e2bb090e52d672d5d628101db
+      ref: 5ef438bcc9f07d158ab451fd84be680c3de41c25
       path: packages/core
 
   app_platform_network:
     git:
       url: https://github.com/hassanMohammedDEV/app_platform.git
-      ref: 5d5ba20ab50b9f8e2bb090e52d672d5d628101db
+      ref: 5ef438bcc9f07d158ab451fd84be680c3de41c25
       path: packages/network
 
   app_platform_state:
     git:
       url: https://github.com/hassanMohammedDEV/app_platform.git
-      ref: 5d5ba20ab50b9f8e2bb090e52d672d5d628101db
+      ref: 5ef438bcc9f07d158ab451fd84be680c3de41c25
       path: packages/state
 
   app_platform_ui:
     git:
       url: https://github.com/hassanMohammedDEV/app_platform.git
-      ref: 5d5ba20ab50b9f8e2bb090e52d672d5d628101db
+      ref: 5ef438bcc9f07d158ab451fd84be680c3de41c25
       path: packages/ui
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
