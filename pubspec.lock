@@ -5,8 +5,8 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/core"
-      ref: "5ef438bcc9f07d158ab451fd84be680c3de41c25"
-      resolved-ref: "5ef438bcc9f07d158ab451fd84be680c3de41c25"
+      ref: c8e4162df4223fe441b6c767443b6fd26157c1a4
+      resolved-ref: c8e4162df4223fe441b6c767443b6fd26157c1a4
       url: "https://github.com/hassanMohammedDEV/app_platform.git"
     source: git
     version: "1.0.0"
@@ -14,8 +14,8 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/network"
-      ref: "5ef438bcc9f07d158ab451fd84be680c3de41c25"
-      resolved-ref: "5ef438bcc9f07d158ab451fd84be680c3de41c25"
+      ref: c8e4162df4223fe441b6c767443b6fd26157c1a4
+      resolved-ref: c8e4162df4223fe441b6c767443b6fd26157c1a4
       url: "https://github.com/hassanMohammedDEV/app_platform.git"
     source: git
     version: "1.0.0"
@@ -23,8 +23,8 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/state"
-      ref: "5ef438bcc9f07d158ab451fd84be680c3de41c25"
-      resolved-ref: "5ef438bcc9f07d158ab451fd84be680c3de41c25"
+      ref: c8e4162df4223fe441b6c767443b6fd26157c1a4
+      resolved-ref: c8e4162df4223fe441b6c767443b6fd26157c1a4
       url: "https://github.com/hassanMohammedDEV/app_platform.git"
     source: git
     version: "1.0.0"
@@ -32,8 +32,8 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/ui"
-      ref: "5ef438bcc9f07d158ab451fd84be680c3de41c25"
-      resolved-ref: "5ef438bcc9f07d158ab451fd84be680c3de41c25"
+      ref: c8e4162df4223fe441b6c767443b6fd26157c1a4
+      resolved-ref: c8e4162df4223fe441b6c767443b6fd26157c1a4
       url: "https://github.com/hassanMohammedDEV/app_platform.git"
     source: git
     version: "1.0.0"

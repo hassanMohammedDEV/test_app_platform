@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:test_pkg/features/products/data/models/product_fields.dart';
 
 final productFormProvider =
-StateNotifierProvider.autoDispose<
+StateNotifierProvider<
     FormNotifier<ProductField>,
     FormStateModel<ProductField>>(
       (ref) {
@@ -17,6 +17,8 @@ StateNotifierProvider.autoDispose<
           ProductField.price:
           const FieldState<String>(value: ''),
           ProductField.code:
+          const FieldState<String>(value: ''),
+          ProductField.website:
           const FieldState<String>(value: ''),
         },
       ),
@@ -42,7 +44,10 @@ StateNotifierProvider.autoDispose<
         ]),
 
         ProductField.code:
-            Validators.required()
+            Validators.required(),
+
+        ProductField.website:
+            Validators.website(),
 
         // ProductField.email:
         // Validators.combine([

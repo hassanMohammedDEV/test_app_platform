@@ -1,3 +1,4 @@
+import 'package:app_platform_ui/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app_platform_state/state.dart';
@@ -48,6 +49,12 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       ),
     );
 
+    final websiteField = ref.watch(
+      productFormProvider.select(
+            (form) => form.field<String>(ProductField.website),
+      ),
+    );
+
     final bool canSubmit = ref.watch(
         productFormProvider.select((form) => form.canSubmit));
 
@@ -57,109 +64,122 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
       appBar: AppBar(title: const Text('إضافة منتج')),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              onChanged: (value) {
-                formNotifier.update(
-                  ProductField.title,
-                  value,
-                );
-              },
-              decoration: InputDecoration(
-                labelText: 'Title',
-                errorText:
-                titleField.touched ? titleField.error : null,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              TextField(
+                onChanged: (value) {
+                  formNotifier.update(
+                    ProductField.title,
+                    value,
+                  );
+                },
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  errorText:
+                  titleField.touched ? titleField.error : null,
+                ),
               ),
+              const SizedBox(height: 12),
+          TextField(
+            onChanged: (value) {
+              formNotifier.update(
+                ProductField.description,
+                value,
+              );
+            },
+            decoration: InputDecoration(
+              labelText: 'Description',
+              errorText:
+              titleField.touched ? decField.error : null,
             ),
-            const SizedBox(height: 12),
-        TextField(
-          onChanged: (value) {
-            formNotifier.update(
-              ProductField.description,
-              value,
-            );
-          },
-          decoration: InputDecoration(
-            labelText: 'Description',
-            errorText:
-            titleField.touched ? decField.error : null,
           ),
-        ),
-            const SizedBox(height: 12),
-            TextField(
-              onChanged: (value) {
-                formNotifier.update(
-                  ProductField.price,
-                  value,
-                );
-              },
-              decoration: InputDecoration(
-                labelText: 'Price',
-                errorText:
-                titleField.touched ? priceField.error : null,
+              const SizedBox(height: 12),
+              TextField(
+                onChanged: (value) {
+                  formNotifier.update(
+                    ProductField.price,
+                    value,
+                  );
+                },
+                decoration: InputDecoration(
+                  labelText: 'Price',
+                  errorText:
+                  titleField.touched ? priceField.error : null,
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-            TextField(
-              onChanged: (value) {
-                formNotifier.updateAsync(
-                  ProductField.code,
-                  value,
-                );
-              },
-              decoration: InputDecoration(
-                labelText: 'Code',
-                errorText:
-                codeField.touched ? codeField.error : null,
-                suffixIcon: codeField.isValidating
-                    ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
+              const SizedBox(height: 12),
+              TextField(
+                onChanged: (value) {
+                  formNotifier.updateAsync(
+                    ProductField.code,
+                    value,
+                  );
+                },
+                decoration: InputDecoration(
+                  labelText: 'Code',
+                  errorText:
+                  codeField.touched ? codeField.error : null,
+                  suffixIcon: codeField.isValidating
+                      ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
                     ),
-                  ),
-                )
-                    : null,
+                  )
+                      : null,
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: canSubmit && isSaving
-                  ? null
-                  : () {
-                      final form = ref.read(productFormProvider);
-                      formNotifier.validateAll();
-                      if (!form.isValid) return;
+              const SizedBox(height: 12),
+              AppTextField(
+                label: 'Website',
+                keyboardType: TextInputType.emailAddress,
+                errorText:
+                websiteField.touched ? websiteField.error : null,
+                isLoading: websiteField.isValidating,
+                onChanged: (value) {
+                  formNotifier.update(ProductField.website, value);
+                },
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: canSubmit && isSaving
+                    ? null
+                    : () {
+                        final form = ref.read(productFormProvider);
+                        formNotifier.validateAll();
+                        if (!form.isValid) return;
 
-                      notifier.create(
-                        Product(
-                          id: 1,
-                          title: form
-                              .field<String>(ProductField.title)
-                              .value,
-                          description: form
-                              .field<String>(ProductField.description)
-                              .value,
-                          price: double.parse(
-                            form
-                                .field<String>(ProductField.price)
+                        notifier.create(
+                          Product(
+                            id: 1,
+                            title: form
+                                .field<String>(ProductField.title)
                                 .value,
+                            description: form
+                                .field<String>(ProductField.description)
+                                .value,
+                            price: double.parse(
+                              form
+                                  .field<String>(ProductField.price)
+                                  .value,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-              child: isSaving
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Text('حفظ'),
-            ),
-          ],
+                        );
+                      },
+                child: isSaving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('حفظ'),
+              ),
+            ],
+          ),
         ),
       ),
     );
