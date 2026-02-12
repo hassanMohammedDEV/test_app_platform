@@ -122,8 +122,8 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
                   codeField.touched ? codeField.error : null,
                   suffixIcon: codeField.isValidating
                       ? const SizedBox(
-                    width: 16,
-                    height: 16,
+                    width: 3,
+                    height: 3,
                     child: Center(
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
@@ -145,39 +145,44 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
                 },
               ),
               const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: canSubmit && isSaving
-                    ? null
-                    : () {
-                        final form = ref.read(productFormProvider);
-                        formNotifier.validateAll();
-                        if (!form.isValid) return;
+          ElevatedButton(
+            onPressed: (!canSubmit || isSaving)
+                ? null
+                : () {
+              final form =
+              ref.read(productFormProvider);
 
-                        notifier.create(
-                          Product(
-                            id: 1,
-                            title: form
-                                .field<String>(ProductField.title)
-                                .value,
-                            description: form
-                                .field<String>(ProductField.description)
-                                .value,
-                            price: double.parse(
-                              form
-                                  .field<String>(ProductField.price)
-                                  .value,
-                            ),
-                          ),
-                        );
-                      },
-                child: isSaving
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('حفظ'),
+              formNotifier.validateAll();
+
+              if (!form.isValid) return;
+
+              notifier.create(
+                Product(
+                  id: 1,
+                  title: form
+                      .field<String>(ProductField.title)
+                      .value,
+                  description: form
+                      .field<String>(ProductField.description)
+                      .value,
+                  price: double.parse(
+                    form
+                        .field<String>(ProductField.price)
+                        .value,
+                  ),
+                ),
+              );
+            },
+            child: isSaving
+                ? const SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(
+                strokeWidth: 5,
               ),
+            )
+                : const Text('حفظ'),
+          ),
             ],
           ),
         ),

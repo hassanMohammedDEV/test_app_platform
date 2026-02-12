@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:test_pkg/features/products/data/models/product_fields.dart';
 
 final productFormProvider =
-StateNotifierProvider<
+StateNotifierProvider.autoDispose<
     FormNotifier<ProductField>,
     FormStateModel<ProductField>>(
       (ref) {
