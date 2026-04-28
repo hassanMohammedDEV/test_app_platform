@@ -61,6 +61,24 @@ class ProductCrudNotifier extends StateNotifier<ActionStore> {
     }
   }
 
+  // Future<void> getDataForEdit(int id) async {
+  //   screenMode = ActionType.update;
+  //
+  //   const key = "fetch_details";
+  //   state = state.start(key);
+  //
+  //   final result = await repository.getDataForEdit(id);
+  //
+  //   switch (result) {
+  //     case Success(:final data):
+  //       _fillFormWithData(data);
+  //       state = state.success(key);
+  //
+  //     case Failure(:final error):
+  //       state = state.fail(key, error);
+  //   }
+  // }
+
   void clear(String key) {
     state = state.clear(key);
   }

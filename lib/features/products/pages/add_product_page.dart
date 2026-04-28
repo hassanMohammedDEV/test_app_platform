@@ -190,6 +190,16 @@ class _AddProductPageState extends ConsumerState<AddProductPage> {
     );
   }
 
+  // void onEdit(){
+  //   final crudState = ref.read(costCenterCrudProvider);
+  //   if (crudState.isSuccess("fetch_details")) {
+  //     CNavigator.push(context, const NewCostCenterScreen());
+  //   } else if (crudState.isFailure("fetch_details")) {
+  //     final error = crudState.get("fetch_details").error;
+  //     CDialogs.alertSnackBar(message: error!.message);
+  //   }
+  // }
+
   void _listenForActions(ActionKey key) {
     listenForActions(
       ref: ref,
