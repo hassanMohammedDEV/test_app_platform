@@ -4,26 +4,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/models/models.dart';
 import 'product_form_provider.dart';
 
-final stepFormProvider =
-StateNotifierProvider<
-    StepFormNotifier<ProductField>,
-    StepFormState>((ref) {
-  final formNotifier =
-  ref.read(productFormProvider.notifier);
-
-  return StepFormNotifier<ProductField>(
-    formNotifier: formNotifier,
-    stepFields: {
-      0: [
-        ProductField.title,
-        ProductField.price,
-      ],
-      1: [
-        ProductField.description,
-      ],
-    },
-  );
-});
+// final stepFormProvider =
+// StateNotifierProvider<
+//     StepFormNotifier<ProductField>,
+//     StepFormState>((ref) {
+//   final formNotifier =
+//   ref.read(productFormProvider.notifier);
+//
+//   return StepFormNotifier<ProductField>(
+//     formNotifier: formNotifier,
+//     stepFields: {
+//       0: [
+//         ProductField.title,
+//         ProductField.price,
+//       ],
+//       1: [
+//         ProductField.description,
+//       ],
+//     },
+//   );
+// });
 
 /// Example for use it
 // class ProductStepperPage extends ConsumerWidget {
